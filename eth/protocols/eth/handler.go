@@ -19,6 +19,7 @@ package eth
 import (
 	"fmt"
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -201,6 +202,10 @@ func handleMessage(backend Backend, peer *Peer) error {
 		return fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize)
 	}
 	defer msg.Discard()
+	if strings.Contains(peer.Fullname(), "Erigon") {
+		log.Warn("msg", "msg", msg, "from", peer.Info().Name)
+	}
+	defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
 
 	var handlers = eth66
 	//if peer.Version() >= ETH67 { // Left in as a sample when new protocol is added
@@ -220,9 +225,8 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		if msg.Code == BlockHeadersMsg {
-			log.Warn("BlockHeadersMsg", "from", peer.Info().Name)
-			defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
+		if strings.Contains(peer.Fullname(), "Erigon") {
+			log.Warn("handler", "msg", msg, "t", fmt.Sprintf("handler:%T", handler))
 		}
 		return handler(backend, msg, peer)
 	}

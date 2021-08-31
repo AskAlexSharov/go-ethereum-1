@@ -20,6 +20,7 @@ import (
 	"errors"
 	"math"
 	"math/big"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -321,6 +322,10 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 		})
 		// Make sure it's cleaned up if the peer dies off
 		defer func() {
+			if strings.Contains(peer.Fullname(), "Erigon") {
+				log.Warn("defer checkpoint")
+			}
+
 			if p.syncDrop != nil {
 				p.syncDrop.Stop()
 				p.syncDrop = nil

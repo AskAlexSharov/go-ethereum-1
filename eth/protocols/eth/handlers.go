@@ -19,6 +19,7 @@ package eth
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -278,6 +279,10 @@ func handleBlockHeaders66(backend Backend, msg Decoder, peer *Peer) error {
 		return fmt.Errorf("%w: message %v: %v", errDecode, msg, err)
 	}
 	requestTracker.Fulfil(peer.id, peer.version, BlockHeadersMsg, res.RequestId)
+	if strings.Contains(peer.Fullname(), "Erigon") {
+		log.Warn("start handle")
+		defer log.Warn("end handle")
+	}
 
 	return backend.Handle(peer, &res.BlockHeadersPacket)
 }
