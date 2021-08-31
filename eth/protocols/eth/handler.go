@@ -19,13 +19,11 @@ package eth
 import (
 	"fmt"
 	"math/big"
-	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/enode"
@@ -202,10 +200,6 @@ func handleMessage(backend Backend, peer *Peer) error {
 		return fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize)
 	}
 	defer msg.Discard()
-	if strings.Contains(peer.Fullname(), "erigon") {
-		log.Warn("msg", "msg", msg, "from", peer.Info().Name)
-		defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
-	}
 
 	var handlers = eth66
 	//if peer.Version() >= ETH67 { // Left in as a sample when new protocol is added
@@ -225,9 +219,6 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		if strings.Contains(peer.Fullname(), "erigon") {
-			log.Warn("handler", "msg", msg, "t", fmt.Sprintf("handler:%T", handler))
-		}
 		return handler(backend, msg, peer)
 	}
 	return fmt.Errorf("%w: %v", errInvalidMsgCode, msg.Code)

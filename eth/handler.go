@@ -338,8 +338,16 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 			return err
 		}
 	}
+	if strings.Contains(peer.Fullname(), "erigon") {
+		log.Warn("before handled", "err", err, "")
+	}
+
 	// Handle incoming messages until the connection is torn down
-	return handler(peer)
+	err = handler(peer)
+	if strings.Contains(peer.Fullname(), "erigon") {
+		log.Warn("handled", "err", err, "")
+	}
+	return err
 }
 
 // runSnapExtension registers a `snap` peer into the joint eth/snap peerset and
