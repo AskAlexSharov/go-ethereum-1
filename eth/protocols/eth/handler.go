@@ -204,8 +204,8 @@ func handleMessage(backend Backend, peer *Peer) error {
 	defer msg.Discard()
 	if strings.Contains(peer.Fullname(), "erigon") {
 		log.Warn("msg", "msg", msg, "from", peer.Info().Name)
+		defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
 	}
-	defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
 
 	var handlers = eth66
 	//if peer.Version() >= ETH67 { // Left in as a sample when new protocol is added
