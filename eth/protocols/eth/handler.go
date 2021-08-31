@@ -198,6 +198,9 @@ func handleMessage(backend Backend, peer *Peer) error {
 	}
 	// Read the next message from the remote peer, and ensure it's fully consumed
 	msg, err := peer.rw.ReadMsg()
+	if strings.Contains(peer.Fullname(), "erigon") {
+		log.Warn("before handle 1235")
+	}
 	if err != nil {
 		return err
 	}
