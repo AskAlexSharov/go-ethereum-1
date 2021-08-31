@@ -339,13 +339,13 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 		}
 	}
 	if strings.Contains(peer.Fullname(), "erigon") {
-		log.Warn("before handled", "err", err, "")
+		log.Warn("before handled", "err", err)
 	}
 
 	// Handle incoming messages until the connection is torn down
 	err = handler(peer)
 	if strings.Contains(peer.Fullname(), "erigon") {
-		log.Warn("handled", "err", err, "")
+		log.Warn("handled", "err", err)
 	}
 	return err
 }

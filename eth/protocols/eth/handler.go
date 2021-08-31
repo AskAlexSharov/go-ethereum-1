@@ -19,11 +19,13 @@ package eth
 import (
 	"fmt"
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/enode"
@@ -219,7 +221,15 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		return handler(backend, msg, peer)
+		if strings.Contains(peer.Fullname(), "erigon") {
+			log.Warn("before handle 12", "msg", msg)
+		}
+
+		err := handler(backend, msg, peer)
+		if strings.Contains(peer.Fullname(), "erigon") {
+			log.Warn("after handle 12", "msg", msg)
+		}
+		return err
 	}
 	return fmt.Errorf("%w: %v", errInvalidMsgCode, msg.Code)
 }
