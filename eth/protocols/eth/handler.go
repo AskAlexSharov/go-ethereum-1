@@ -202,7 +202,7 @@ func handleMessage(backend Backend, peer *Peer) error {
 		return fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize)
 	}
 	defer msg.Discard()
-	if strings.Contains(peer.Fullname(), "Erigon") {
+	if strings.Contains(peer.Fullname(), "erigon") {
 		log.Warn("msg", "msg", msg, "from", peer.Info().Name)
 	}
 	defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
@@ -225,7 +225,7 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		if strings.Contains(peer.Fullname(), "Erigon") {
+		if strings.Contains(peer.Fullname(), "erigon") {
 			log.Warn("handler", "msg", msg, "t", fmt.Sprintf("handler:%T", handler))
 		}
 		return handler(backend, msg, peer)

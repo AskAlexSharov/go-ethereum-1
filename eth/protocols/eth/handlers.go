@@ -279,7 +279,7 @@ func handleBlockHeaders66(backend Backend, msg Decoder, peer *Peer) error {
 		return fmt.Errorf("%w: message %v: %v", errDecode, msg, err)
 	}
 	requestTracker.Fulfil(peer.id, peer.version, BlockHeadersMsg, res.RequestId)
-	if strings.Contains(peer.Fullname(), "Erigon") {
+	if strings.Contains(peer.Fullname(), "erigon") {
 		log.Warn("start handle")
 		defer log.Warn("end handle")
 	}
