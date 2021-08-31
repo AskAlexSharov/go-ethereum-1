@@ -24,6 +24,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/enode"
@@ -219,6 +220,10 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
+		if msg.Code == BlockHeadersMsg {
+			log.Warn("BlockHeadersMsg", "from", peer.Info().Name)
+			defer func(t time.Time) { log.Warn("handler.go:225", "in", time.Since(t)) }(time.Now())
+		}
 		return handler(backend, msg, peer)
 	}
 	return fmt.Errorf("%w: %v", errInvalidMsgCode, msg.Code)
