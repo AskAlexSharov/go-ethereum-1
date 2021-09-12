@@ -198,9 +198,6 @@ func handleMessage(backend Backend, peer *Peer) error {
 	}
 	// Read the next message from the remote peer, and ensure it's fully consumed
 	msg, err := peer.rw.ReadMsg()
-	if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
-		log.Warn("recv message", "msg", msg.Code)
-	}
 	if err != nil {
 		return err
 	}
@@ -230,9 +227,6 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
-			log.Warn("try handle", "msg", msg)
-		}
 		err := handler(backend, msg, peer)
 		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
 			log.Warn("after handle", "msg", msg, "err", err)
