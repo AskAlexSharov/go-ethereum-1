@@ -199,7 +199,7 @@ var eth66 = map[uint64]msgHandler{
 // peer. The remote connection is torn down upon returning any error.
 func handleMessage(backend Backend, peer *Peer) error {
 	if strings.Contains(peer.Fullname(), "alex") {
-		log.Warn("before handle")
+		log.Warn("before handle", "peerID", peer.Info().ID)
 	}
 	// Read the next message from the remote peer, and ensure it's fully consumed
 	msg, err := peer.rw.ReadMsg()
