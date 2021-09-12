@@ -115,8 +115,13 @@ func MakeProtocols(backend Backend, network uint64, dnsdisc enode.Iterator) []p2
 			Run: func(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 				peer := NewPeer(version, p, rw, backend.TxPool())
 				defer peer.Close()
-
+				if strings.Contains(peer.Fullname(), "alex") {
+					log.Warn("connected", "name", peer.Fullname())
+				}
 				return backend.RunPeer(peer, func(peer *Peer) error {
+					if strings.Contains(peer.Fullname(), "alex") {
+						log.Warn("run peer", "name", peer.Fullname())
+					}
 					return Handle(backend, peer)
 				})
 			},
