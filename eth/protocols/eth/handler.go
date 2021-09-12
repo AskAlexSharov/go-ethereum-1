@@ -194,19 +194,19 @@ var eth66 = map[uint64]msgHandler{
 // peer. The remote connection is torn down upon returning any error.
 func handleMessage(backend Backend, peer *Peer) error {
 	if strings.Contains(peer.Fullname(), "alex") {
-		log.Warn("before handle 123")
+		log.Warn("before handle")
 	}
 	// Read the next message from the remote peer, and ensure it's fully consumed
 	msg, err := peer.rw.ReadMsg()
 	if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
-		log.Warn("before handle 1235", "msg", msg.Code)
+		log.Warn("recv message", "msg", msg.Code)
 	}
 	if err != nil {
 		return err
 	}
 	if msg.Size > maxMessageSize {
 		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
-			log.Warn("before handle 1234", "err", fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize))
+			log.Warn("recv message", "err", fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize))
 		}
 		return fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize)
 	}
@@ -230,13 +230,12 @@ func handleMessage(backend Backend, peer *Peer) error {
 		}(time.Now())
 	}
 	if handler := handlers[msg.Code]; handler != nil {
-		if strings.Contains(peer.Fullname(), "alex") {
-			log.Warn("before handle 12", "msg", msg)
+		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
+			log.Warn("try handle", "msg", msg)
 		}
-
 		err := handler(backend, msg, peer)
-		if strings.Contains(peer.Fullname(), "alex") {
-			log.Warn("after handle 12", "msg", msg)
+		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
+			log.Warn("after handle", "msg", msg, "err", err)
 		}
 		return err
 	}
