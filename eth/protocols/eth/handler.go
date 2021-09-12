@@ -198,14 +198,14 @@ func handleMessage(backend Backend, peer *Peer) error {
 	}
 	// Read the next message from the remote peer, and ensure it's fully consumed
 	msg, err := peer.rw.ReadMsg()
-	if strings.Contains(peer.Fullname(), "alex") {
+	if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
 		log.Warn("before handle 1235", "msg", msg.Code)
 	}
 	if err != nil {
 		return err
 	}
 	if msg.Size > maxMessageSize {
-		if strings.Contains(peer.Fullname(), "alex") {
+		if strings.Contains(peer.Fullname(), "alex") && msg.Code < 6 {
 			log.Warn("before handle 1234", "err", fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize))
 		}
 		return fmt.Errorf("%w: %v > %v", errMsgTooLarge, msg.Size, maxMessageSize)
